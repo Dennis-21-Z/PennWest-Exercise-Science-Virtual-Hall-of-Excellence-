@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+		<title>Admin Panel</title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+	</head>
+
+	<body>
+		<header>
+			<div class="logo-container">
+				<img src="Images/pw-wordmark-white.png" alt="PW Logo" />
+				<div class="title-container">
+					<h1 class="main-title">Admin Panel</h1>
+				</div>
+			</div>
+		</header>
+			<!-- Navbar -->
+   		 <nav>
+     			 <ul>
+       				 <li>
+         				 <a href="index.html">Home</a>
+       				 </li>
+   			 </ul>
+		 </nav>
+
+		 <!-- Admin Panels -->
+
+
+		<!-- Login Panel -->
+		<section id="login-section">
+			<h2>Admin Login</h2>
+			<form id="login-form">
+				<div>
+					<label>Username:</label>
+					<input type="text" id="username" required />
+				</div>
+
+				<div>
+					<label>Password:</label>
+					<input type="password" id="password" required />
+				</div>
+
+				<button type="submit">Login</button>
+			</form>
+		</section>
+
+		<!--Dashboard Panel-->
+		<section id="dashboard" style="display: none">
+			<h2>Manage Alumni</h2>
+			<button id="add-alumni-btn">Add Alumni</button><br />
+			<button id="edit-alumni-btn">Edit Alumni</button><br />
+			<br />
+			<h2>Manage Website</h2>
+			<button id="manage-website-btn">Manage Website</button>
+			<br />
+			<!--Super Admin Button-->
+			<br />
+			<h2 class="super-only">Manage Admin Accounts</h2>
+			<button id="manage-admins-btn" class="super-only" style="display: none">Manage Admin Accounts</button> <br />
+		</section>
+
+		<!--Add Alumni Panel-->
+		<section id="add-alumni" style="display: none">
+			<h2>Add Alumni</h2>
+		
+
+			<form id="addAlumniForm" enctype="multipart/form-data" method="post">
+				<label>First Name:</label><br />
+				<input type="text" name="new-alumni-first-name" id="new-alumni-first-name"/><br />
+
+				<label>Last Name:</label><br />
+				<input type="text" name="new-alumni-last-name" id="new-alumni-last-name"/><br />
+
+				<label>Job Title:</label><br />
+				<input type="text" name="new-alumni-job-title" id="new-alumni-job-title"/><br />
+
+				<label>Employer:</label><br />
+				<input type="text" name="new-alumni-employer" id="new-alumni-employer"><br />
+
+				<label>Job Setting:</label><br />
+				<input type="text" name="new-alumni-job-setting" id="new-alumni-job-setting"><br />
+
+				<label>Year Started:</label><br />
+				<input type="text" name="new-alumni-start-date" id="new-alumni-start-date"><br />
+
+				<label>Year Graduated:</label><br />
+				<input type="text" name="new-alumni-end-date" id="new-alumni-end-date"><br />
+				
+				<label>Program:</label><br />
+				<select name="new-alumni-program" id="new-alumni-program">
+					<option value="">Select Program</option>
+					<option value="BS in Exercise Science">BS in Exercise Science</option>
+					<option value="MS in Exercise Science and Health Promotion">MS in Exercise Science and Health Promotion</option>
+					<option value="DHSc in Health Science and Exercise Leadership">DHSc in Health Science and Exercise Leadership</option>
+					<option value="MS in Sport Management">MS in Sport Management</option>
+					<option value="MS in Athletic Training">MS in Athletic Training</option>
+				</select><br />			
+
+				<label>Concentration:</label><br />
+				<select name="new-alumni-concentration" id="new-alumni-concentration">
+					<option value="">Select a program first</option>
+				</select><br />
+
+				<label>Bio:</label><br />
+				<textarea name="new-alumni-bio" id="new-alumni-bio" rows="20" cols="100"></textarea><br />
+				
+				<label>Image:</label><br />
+				<input type="file" name="new-alumni-image" id="new-alumni-image" accept="image/*"/><br />
+
+				<label>Photo url:</label><br />
+				<textarea name="new-alumni-photo-url" id="new-alumni-photo-url" disabled></textarea><br />
+
+				<script>
+				const fileInput = document.getElementById('new-alumni-image');
+				const photoUrlTextarea = document.getElementById('new-alumni-photo-url');
+
+				const firstNameInput = document.getElementById('new-alumni-first-name');
+				const lastNameInput = document.getElementById('new-alumni-last-name');
+
+				fileInput.addEventListener('change', function(event) {
+				    const file = event.target.files[0];
+
+				    if (file) {
+					// Get names from inputs
+					const firstName = firstNameInput.value.trim();
+					const lastName = lastNameInput.value.trim();
+
+					// Extract file extension (e.g. jpg, png)
+					const extension = file.name.split('.').pop();
+
+					// Build new filename
+					const newFileName = `${firstName} ${lastName}.${extension}`;
+
+					// Final path
+					const photoUrl = `Images/Exercise Science Alumni/${newFileName}`;
+
+					photoUrlTextarea.value = photoUrl;
+				    } else {
+					photoUrlTextarea.value = '';
+				    }
+				});
+				</script>
+
+				<button type="submit" id="add-alumni-final">Add Alumni</button><br />
+				<button type="button" id="add-alumni-back">Back</button><br />
+			</form>
+		</section>
+
+		<!--Edit Alumni Selector Panel-->
+		<section id="edit-select" style="display: none">
+			<h2>Edit Alumni - Select Entry</h2>
+
+			<!--Search Bar-->
+			<div class="search-container">
+				<input type="text" id="edit-search" placeholder="Search alumni..."/>
+			</div>
+
+			<!--Scrollable List (JS inserts entries here)-->
+			<div class="scroll-list" id="alumni-list"></div>
+			<button id="edit-select-back">Back</button><br />
+		</section>
+
+		<!--Edit Alumni Panel-->
+		<section id="edit-alumni" style="display: none">
+			<h2>Edit Alumni</h2>
+			
+			<label>Database Key:(Cannot be edited)</label><br />
+			<input type="text" id="edit-pennwestID" disabled/><br />
+			
+			<label>First Name:</label><br />
+			<input type="text" id="edit-firstname"/><br />
+
+			<label>Last Name:</label><br />
+			<input type="text" id="edit-lastname"/><br />
+		
+			<label>Job Title:</label><br />
+			<input type="text" id="edit-jobtitle"/><br />
+			
+			<label>Employer:</label><br />
+			<input type="text" id="edit-employer"/><br />
+
+			<label>Job Setting:</label><br />
+			<input type="text" id="edit-jobsetting"/><br />
+
+			<label>Year Started:</label><br />
+			<input type="text" id="edit-yearStart"/><br />
+
+			<label>Year Graduated:</label><br />
+			<input type="text" id="edit-yearGrad"/><br />
+
+			<label>Program:</label><br />
+                        <select name="edit-alumni-program" id="edit-alumni-program">
+                        	<option value="">Select Program</option>
+				<option value="BS in Exercise Science">BS in Exercise Science</option>
+				<option value="MS in Exercise Science and Health Promotion">MS in Exercise Science and Health Promotion</option>
+				<option value="DHSc in Health Science and Exercise Leadership">DHSc in Health Science and Exercise Leadership</option>
+				<option value="MS in Sport Management">MS in Sport Management</option>
+				<option value="MS in Athletic Training">MS in Athletic Training</option>
+			</select><br />
+
+			<label>Concentration:</label><br />
+			<select name="edit-alumni-concentration" id="edit-alumni-concentration">
+				<option value="">Select a program first</option>
+			</select><br />
+
+
+			<label>Bio:</label><br />
+			<textarea id="edit-bio" rows="20" cols="100"></textarea><br />
+
+			<label>Image:</label><br />
+                        <input type="file" name="edit-alumni-image" id="edit-alumni-image" accept="image/*"/><br />
+			
+			<label>Photo url:</label><br />
+                                <textarea name="edit-alumni-photo-url" id="edit-alumni-photo-url" disabled></textarea><br />
+
+                                <script>
+				const fileInput2 = document.getElementById('edit-alumni-image');
+				const photoUrlTextarea2 = document.getElementById('edit-alumni-photo-url');
+
+				const firstNameInput2 = document.getElementById('edit-firstname');
+				const lastNameInput2 = document.getElementById('edit-lastname');
+
+				fileInput2.addEventListener('change', function(event) {
+				    const file2 = event.target.files[0];
+
+				    if (file2) {
+					const firstName2 = firstNameInput2.value.trim();
+					const lastName2 = lastNameInput2.value.trim();
+
+					// Prevent empty names
+					if (!firstName2 || !lastName2) {
+					    alert("Enter first and last name before selecting an image.");
+					    fileInput2.value = "";
+					    return;
+					}
+
+					// Get file extension
+					const extension2 = file2.name.split('.').pop();
+
+					// Build filename
+					const newFileName2 = `${firstName2} ${lastName2}.${extension2}`;
+
+					// Final path
+					const photoUrl2 = `Images/Exercise Science Alumni/${newFileName2}`;
+
+					photoUrlTextarea2.value = photoUrl2;
+				    } else {
+					photoUrlTextarea2.value = '';
+				    }
+				});
+				</script>
+
+
+			<button id="edit-save-btn">Save Changes</button><br />
+			<button id="edit-alumni-back">Back</button><br />
+		</section>
+
+ 		<!-- Manage Website Panels -->
+
+    		<!-- Manage Website Main Panel -->
+		<section id="manage-website-main" style="display: none">
+		     	<h2>Manage Website</h2>
+		      	<button id="manage-welcome-message-btn">Welcome Message</button><br />
+		      	<button id="manage-featured-video-btn">Featured Video</button><br />
+		      	<button id="manage-awards-btn">Awards</button><br />
+		      	<button id="manage-qa-btn">FAQ</button><br />
+		      	<br />
+		      	<button id="manage-website-back">Back</button><br />
+		</section>
+
+		<!-- Manage Welcome Message Panel -->
+		<section id="manage-welcome-message" style="display: none">
+		      	<h2>Welcome Message</h2>
+
+		      	<label>Heading:</label><br />
+		      	<input type="text" id="edit-welcome-message-heading" /><br />
+
+		      	<label>Message:</label><br />
+		      	<textarea id="edit-welcome-message" rows="20" cols="100"></textarea><br />
+
+		      	<button id="welcome-save-btn">Save Changes</button><br />
+		      	<button id="welcome-back-btn">Back</button><br />
+		</section>
+
+		<!-- Manage Featured Video Panel -->
+		<section id="manage-featured-video" style="display: none">
+		      	<h2>Featured Video</h2>
+			
+			<h3>Must use youtu.be sytle link</h3>
+			<h3>Obtain by going to Share on youtube page and copy the link</h3>
+		      	<label>YouTube Link:</label><br />
+		      	<input type="text" id="edit-featured-video-link" /><br />
+
+		      	<button id="video-save-btn">Save Changes</button><br />
+		      	<button id="video-back-btn">Back</button><br />
+		</section>
+
+		<!-- Manage Awards Panel -->
+		<section id="manage-awards" style="display: none">
+		     	<h2>Awards</h2>
+
+		      	<label>Award Name / Description:</label><br />
+		      	<textarea id="new-award-name" rows="20" cols="100"></textarea><br />
+
+		      	<button id="add-award-btn">Add New Award</button><br />
+
+		      	<!-- Search Bar -->
+		      	<div class="search-container">
+				<input type="text" id="awards-search" placeholder="Search awards..." />
+		      	</div>
+
+		      	<!-- Scrollable list (JS inserts entries here) -->
+		      	<div id="awards-list" class="scroll-list"></div>
+
+		      	<button id="awards-back-btn">Back</button><br />
+		</section>
+
+		<!--Edit Award Panel-->
+                <section id="edit-award" style="display: none">
+                        <h2>Edit Awards</h2>
+			
+			<input type="hidden" id="edit-award-id">
+			<label>Award Name / Description:</label><br />
+                        <textarea id="edit-award-name" rows="20" cols="100"></textarea><br />
+			
+
+			<button id="edit-award-save">Save Changes</button><br />
+
+			<button id="edit-award-back">Back</button><br />
+                </section>
+
+
+
+
+		<!-- Manage FAQ Panel -->
+
+		<!-- ================= FORM (ADD / EDIT) ================= -->
+
+		<section id="manage-qa" style="display: none">
+
+  		<h2>FAQ</h2>
+
+  		<!-- FORM (Add / Edit) -->
+  		<form id="faqForm">
+
+    		<!-- hidden field for edit mode -->
+    		<input type="hidden" id="editIndex">
+
+	    	<label for="question">Question</label>
+    		<input type="text" id="question" required>
+
+    		<label for="answer">Answer</label>
+	    	<textarea id="answer" rows="4" required></textarea>
+
+    		<div class="form-actions">
+      			<button type="submit">Save FAQ</button>
+      			<button type="button" id="cancelEdit">Cancel</button>
+    		</div>
+
+  		</form>
+
+  		<p id="status"></p>
+
+  		<hr>
+
+  		<!-- SEARCH -->
+  		<input 
+    			type="text" 
+    			id="searchAdmin" 
+    			placeholder="Search FAQs..."
+  		>
+
+  		<!-- FAQ LIST -->
+  		<div id="faqList"></div>
+
+  		<br>
+
+  		<button id="qa-back-btn">Back</button>
+
+		</section>
+		<!--	<p id="status"></p>
+		      	<label>Current File:</label><br />
+		      	<button id="qa-download-btn">Download File</button><br />
+		      	<br />
+
+		      	<label>Upload New File:</label><br />
+		      	<button id="qa-upload-btn">Upload File</button><br />
+			<br /> -->
+
+		<!--Super Admin Stuff-->
+
+		<!--Super Admin Panels-->
+		<section id="manage-admins" style="display: none">
+			<h2>Manage Admin Accounts</h2>
+			<button id="add-admin-btn">Add New Admin</button><br />
+			<div class="scroll-list" id="admin-list"></div>
+			<button id="admin-back">Back</button>
+		</section>
+
+		<section id="add-admin" style="display: none">
+			
+			<h2>Add Admin Account</h2>
+			<form action="admin.php" method="POST" id="addAdminForm">
+
+				<label>Admin's Full Name</label><br />
+				<input type="text" name="new-admin-name" id="new-admin-name"/><br />
+
+				<label>Email</label><br />
+				<input type="text" name="new-admin-email" id="new-admin-email"/><br />
+				
+				<label>Pennwest ID</label><br />
+				<input type="text" name="new-admin-id" id="new-admin-id"/><br />
+
+				<label>Username:</label><br />
+				<input type="text" name="new-admin-username" id="new-admin-username"/><br />
+			
+				<label>Password:</label><br />
+				<input type="password" name="new-admin-password"  id="new-admin-password"/><br />
+				
+				<label>Reenter Password:</label><br />
+				<input type="password" name="new-admin-password-reenter"  id="new-admin-password-reenter"/><br />
+
+				<label>Choose Admin Type</label><br />
+				<select name="new-admin-role" id="new-admin-role">
+					<option value="Standard Admin">Standard</option>
+					<option value="Super Admin">Super</option>
+				</select><br /><br />
+
+				<button type="submit" id="save-new-admin" disabled>Save</button>
+			</form>
+			<button id="add-admin-back">Back</button>
+		</section>
+
+		<section id="edit-admin" style="display: none">
+			<h2>Edit Admin Account</h2>
+			
+			 <label>Admin's Full Name</label><br />
+                         <input type="text" name="edit-admin-name" id="edit-admin-fullname"/><br />
+
+                         <label>Email</label><br />
+                         <input type="text" name="edit-admin-email" id="edit-admin-email"/><br />
+		
+                         <label>Username:</label><br />
+                         <input type="text" name="edit-admin-username" id="edit-admin-username"/><br />
+
+                         <label>New Password:</label><br />
+                         <input type="password" name="edit-admin-password"  id="edit-admin-password" placeholder="Leave blank to keep current password"/><br />
+			
+<!--			 <label>Reenter New Password:</label><br />
+			 <input type="password" name="edit-admin-password-reenter" id="edit-admin-password-reenter"
+-->
+                         <label>Choose Admin Type</label><br />
+                         <select name="edit-admin-role" id="edit-admin-role">
+                         	<option value="Standard Admin">Standard</option>
+                                <option value="Super Admin">Super</option>
+                         </select><br /><br />
+
+			<button type="button" id="edit-admin-save">Save Changes</button><br />
+			<button id="edit-admin-back">Back</button>
+		</section>
+
+		<!--Footer-->
+		<footer>
+			<div class="footer-container">
+				<h3>Follow us on social media!</h3>
+				<div class="social-icons">
+					<div class="social-item">
+						<a href="https://www.facebook.com/PennWestUniversity" target="_blank">
+							<i class="bi bi-facebook"></i>
+						</a>
+						<p>Facebook</p>
+					</div>
+					<div class="social-item">
+						<a href="https://www.instagram.com/pennwestexscionline/" target="_blank">
+							<i class="bi bi-instagram"></i>
+						</a>
+						<p>Instagram</p>
+					</div>
+					<div class="social-item">
+						<a href="https://www.linkedin.com/school/pennwest-university/" target="_blank">
+							<i class="bi bi-linkedin"></i>
+						</a>
+						<p>LinkedIn</p>
+					</div>
+					<div class="social-item">
+						<a href="https://www.youtube.com/@PennWestExerciseScience" target="_blank">
+							<i class="bi bi-youtube"></i>
+						</a>
+						<p>YouTube</p>
+					</div>
+				</div>
+				<p>PennWest University</p>
+				<p>Exercise Science Program</p>
+				<a href="admin.html" style="color #ccc; font-size: 0.93em">Admin Login</a>
+			</div>
+		</footer>
+		<script src="admin.js"></script>
+	</body>
+</html>
